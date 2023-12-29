@@ -45,3 +45,23 @@ def generate_jwt(username):
     token = jwt.encode(token_payload, JWT_SECRET_KEY, algorithm='HS256')
 
     return token
+
+@app.route('/dashboard')
+def dashboard():
+    token = request.cookies.get('jwt_token')
+
+    if token:
+        # Decode the JWT token to get the username
+        decoded_token = jwt.decode(token, JWT_SECRET_KEY, algorithms=['HS256'])
+        current_username = decoded_token.get('username')
+
+        if current_username == 'simple_user':
+            # Redirect simple_user to an unauthorized page
+            return render_template('unauthorized.html', title='Unauthorized')
+
+        elif current_username == 'admin':
+            # Read the content of flag.txt (replace with actual path)
+            flag_content = read_flag()
+            return render_template('dashboard.html', title='The Secret Cleanup - Dashboard', flag_content=flag_content)
+
+    return render_template('unauthorized.html', title='Unauthorized')
