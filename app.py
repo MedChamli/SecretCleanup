@@ -65,3 +65,20 @@ def dashboard():
             return render_template('dashboard.html', title='The Secret Cleanup - Dashboard', flag_content=flag_content)
 
     return render_template('unauthorized.html', title='Unauthorized')
+
+def read_flag():
+    # Replace with the actual path to flag.txt
+    flag_path = os.path.join(os.path.dirname(__file__), 'flag.txt')
+
+    # Read and return the content of flag.txt
+    with open(flag_path, 'r') as flag_file:
+        return flag_file.read()
+
+@app.route('/logout')
+def logout():
+    response = make_response(redirect(url_for('index')))
+    response.delete_cookie('jwt_token')  # Remove the JWT token from the cookie
+    return response
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
